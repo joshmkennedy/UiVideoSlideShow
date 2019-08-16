@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { graphql, useStaticQuery } from "gatsby"
 import styled from "styled-components"
+import { useTransition } from "react-spring"
 
 /**
  * TODO - style video
