@@ -5,12 +5,17 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-import React from "react"
+import React, { useState, useContext } from "react"
 import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 
-import Header from "./header"
+import styled from "styled-components"
 import "./layout.css"
+import { black, colors } from "./styles"
+import { set } from "timm"
+
+const ThemeHelloContext = React.createContext("hello")
+export { ThemeHelloContext }
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -23,25 +28,34 @@ const Layout = ({ children }) => {
     }
   `)
 
+  const [currentColor, setCurrentColor] = useState(1)
+
   return (
-    <>
-      <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0px 1.0875rem 1.45rem`,
-          paddingTop: 0,
-        }}
-      >
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-      </div>
-    </>
+    <ThemeHelloContext.Provider value={{ currentColor, setCurrentColor }}>
+      <ThemeHelloContext.Consumer>
+        {value => (
+          <TheLayout currentColor={colors[value.currentColor]}>
+            <div>
+              <h1 style={{ margin: 0 }}>
+                <Link
+                  to="/"
+                  style={{
+                    fontSize: "20px",
+                    textDecoration: `none`,
+                    color: `white`,
+                  }}
+                >
+                  {data.site.siteMetadata.title}
+                </Link>
+              </h1>
+            </div>
+            <PageWrapper>
+              <main>{children}</main>
+            </PageWrapper>
+          </TheLayout>
+        )}
+      </ThemeHelloContext.Consumer>
+    </ThemeHelloContext.Provider>
   )
 }
 
@@ -50,3 +64,20 @@ Layout.propTypes = {
 }
 
 export default Layout
+const TheLayout = styled.div`
+  transition: background 0.5s;
+  background: ${props => props.currentColor};
+  display: grid;
+  grid-template: 100% / 100px 1fr;
+  h1 {
+    position: absolute;
+    transform: rotate(-90deg) translate(calc(201px + -100vh), 44%);
+    left: 0;
+    top: 0;
+    transform-origin: left top;
+  }
+`
+
+const PageWrapper = styled.div`
+  width: 100%;
+`

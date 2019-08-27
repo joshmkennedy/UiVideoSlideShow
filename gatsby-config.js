@@ -20,6 +20,13 @@ module.exports = {
         path: `${__dirname}/videos`,
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `covers`,
+        path: `${__dirname}/covers`,
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     `gatsby-plugin-styled-components`,
